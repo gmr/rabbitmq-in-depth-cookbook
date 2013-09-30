@@ -13,12 +13,9 @@
 end
 
 # Reset the permissions on the git clone
-directory '/opt/rabbitmq-in-depth' do
-  action    :nothing
-  owner     'vagrant'
-  group     'vagrant'
-  mode      0644
-  recursive true
+execute 'fix-permissions' do
+  action  :nothing
+  command 'chown -R vagrant:vagrant /opt/rabbitmq-in-depth; chmod og+rwx /opt/rabbitmq-in-depth /opt/rabbitmq-in-depth/notebooks /opt/rabbitmq-in-depth/Examples'
 end
 
 # Clone the git resources for the book
@@ -26,7 +23,7 @@ git '/opt/rabbitmq-in-depth' do
   repository 'https://github.com/gmr/RabbitMQ-in-Depth.git'
   revision  'HEAD'
   action    :sync
-  notifies :create, 'directory[/opt/rabbitmq-in-depth]'
+  notifies  :run, 'execute[fix-permissions]'
 end
 
 # Remove any extraneous packages

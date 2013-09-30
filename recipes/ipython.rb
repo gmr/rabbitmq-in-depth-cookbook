@@ -41,10 +41,11 @@ end
 
 # Create the ipython notebook service
 supervisor_service 'ipython' do
-  action :enable
-  command 'ipython notebook --ipython-dir=/home/vagrant/.ipython'
-  user 'vagrant'
-  numprocs 1
+  action         :enable
+  command        'ipython notebook --ipython-dir=/home/vagrant/.ipython --autoindent --pprint --color-info'
+  directory      '/home/vagrant'
+  user           'vagrant'
+  numprocs       1
   stdout_logfile '/var/log/ipython/stdout.log'
   stderr_logfile '/var/log/ipython/stderr.log'
   notifies :reload, 'service[supervisor]'
