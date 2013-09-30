@@ -12,14 +12,24 @@
   end
 end
 
+# Reset the permissions on the git clone
+directory '/opt/rabbitmq-in-depth' do
+  action    :nothing
+  owner     'vagrant'
+  group     'vagrant'
+  mode      0644
+  recursive true
+end
+
+# Clone the git resources for the book
 git '/opt/rabbitmq-in-depth' do
   repository 'https://github.com/gmr/RabbitMQ-in-Depth.git'
   revision  'HEAD'
   action    :sync
-  owner     'vagrant'
-  group     'vagrant'
+  notifies :create, 'directory[/opt/rabbitmq-in-depth]'
 end
 
+# Remove any extraneous packages
 execute 'package-cleanup' do
   command 'apt-get -y autoremove'
 end
