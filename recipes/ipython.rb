@@ -12,14 +12,14 @@
 end
 
 # Install the Python library dependencies
-%w[nose pexpect pygments pyzmq readline requests tornado ipython].each do |pkg|
+%w[nose pexpect pygments pyzmq readline requests tornado jinja2 ipython].each do |pkg|
   python_pip pkg do
     action :install
   end
 end
 
 # Create the work Directories
-%w[/var/log/ipython 
+%w[/var/log/ipython
    /home/vagrant/.ipython
    /home/vagrant/.ipython/profile_default].each do |dir|
   directory dir do
@@ -42,9 +42,10 @@ end
 # Create the ipython notebook service
 supervisor_service 'ipython' do
   action :enable
-  command 'ipython notebook'
+  command 'ipython notebook --ipython-dir=/home/vagrant/.ipython'
   user 'vagrant'
   numprocs 1
   stdout_logfile '/var/log/ipython/stdout.log'
   stderr_logfile '/var/log/ipython/stderr.log'
+  notifies :reload, 'service[supervisor]'
 end
