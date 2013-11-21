@@ -25,8 +25,3 @@ git '/opt/rabbitmq-in-depth' do
   action    :sync
   notifies  :run, 'execute[fix-permissions]'
 end
-
-# Remove any extraneous packages
-execute 'package-cleanup' do
-  command 'apt-get -y autoremove'
-end
