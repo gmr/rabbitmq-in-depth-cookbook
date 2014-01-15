@@ -6,7 +6,7 @@
 #
 
 # Ensure the libraries used in the Python examples are always up to date
-%w[pika pamqp rabbitpy mosquitto].each do |pkg|
+%w[pika pamqp rabbitpy mosquitto stomp.py].each do |pkg|
   python_pip pkg do
     action :upgrade
   end
