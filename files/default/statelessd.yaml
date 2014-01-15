@@ -1,0 +1,70 @@
+%YAML 1.2
+---
+Daemon:
+  pidfile: /var/run/statelessd/statelessd.pid
+  user: statelessd
+
+Application:
+  debug: False
+  xsrf_cookies: false
+  paths:
+    base: /usr/local/share/statelessd
+    static: static
+    templates: templates
+  rabbitmq:
+    host: localhost
+    port: 5672
+
+HTTPServer:
+  no_keep_alive: false
+  ports: [8900]
+  xheaders: false
+
+Routes:
+ - ['/([^/]+)/([^/]+)/([^/]+)', statelessd.Publisher]
+ - [/stats, statelessd.Stats]
+ - [/, statelessd.Dashboard]
+
+Logging:
+  version: 1
+  formatters:
+    verbose:
+      format: '%(levelname) -10s %(asctime)s %(processName)-20s %(name) -35s %(funcName) -30s: %(message)s'
+      datefmt: '%Y-%m-%d %H:%M:%S'
+  filters: []
+  handlers:
+    console:
+      class: logging.StreamHandler
+      formatter: verbose
+      debug_only: false
+  loggers:
+    clihelper:
+      level: WARNING
+      propagate: true
+      handlers: [console]
+    pika:
+      level: INFO
+      propagate: true
+      handlers: [console]
+    pika.adapters:
+      level: DEBUG
+      propagate: true
+      handlers: [console]
+    pika.connection:
+      level: DEBUG
+      propagate: true
+      handlers: [console]
+    statelessd:
+      level: INFO
+      propagate: true
+      handlers: [console]
+    tinman:
+      level: INFO
+      propagate: true
+      handlers: [console]
+    tornado:
+      level: WARNING
+      propagate: true
+      handlers: [console]
+  disable_existing_loggers: true
+  incremental: false
