@@ -16,3 +16,10 @@ end
     action :upgrade
   end
 end
+
+# Overwrite the /etc/hosts file with one that has the node ip addresses
+cookbook_file '/etc/hosts' do
+    source 'hosts'
+    owner  'root'
+    mode   0644
+end
