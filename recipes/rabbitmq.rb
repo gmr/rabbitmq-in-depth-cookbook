@@ -6,6 +6,22 @@
 #
 include_recipe "rabbitmq::default"
 
+service_name = node[:rabbitmq][:service_name]
+
+file '/var/lib/rabbitmq/.erlang.cookie' do
+    action  :nothing
+    content "XBCDDYAVPRVEYREVJLXS\n"
+    owner 'rabbitmq'
+    group 'rabbitmq'
+    mode  0400
+    notifies :start, "service[#{service_name}]", :immediate
+end
+
+service node[:rabbitmq][:service_name] do
+    action :stop
+    notifies :create, "file[/var/lib/rabbitmq/.erlang.cookie]", :immediate
+end
+
 plugins = %w[rabbitmq_management
              rabbitmq_management_visualiser
              rabbitmq_consistent_hash_exchange
@@ -18,8 +34,6 @@ plugins = %w[rabbitmq_management
              rabbitmq_tracing
              rabbitmq_web_stomp
              rabbitmq_web_stomp_examples]
-
-service_name = node[:rabbitmq][:service_name]
 
 plugins.each do |plugin|
   rabbitmq_plugin plugin do
